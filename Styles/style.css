@@ -49,9 +49,7 @@ body {
     margin: 14px 5px;
     height: 120px;
 }
-.thumb-wrapper.selected {
-  border-color: green;
-}
+
 
 
  .tick {
@@ -156,3 +154,13 @@ canvas#preview {
     font-weight: 700;
 }
 
+.thumb:hover {
+    border: 2px solid #008000;
+   box-shadow: 0px 0px 7px 3px #a7b3b7;
+}
+
+.thumb-wrapper.selected {
+  /* border-color: green; */
+   border: 2px solid #008000;
+    box-shadow: 0px 0px 7px 3px #a7b3b7;
+}
