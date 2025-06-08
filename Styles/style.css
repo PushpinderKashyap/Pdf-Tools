@@ -1,0 +1,158 @@
+body {
+  font-family: Arial, sans-serif;
+}
+.upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-family: sans-serif;
+}
+
+.drop-area {
+  border: 2px dashed #007bff;
+  background-color: #f0f8ff;
+  border-radius: 15px;
+  padding: 40px 20px;
+  width: 350px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.drop-area:hover {
+  background-color: #e6f2ff;
+}
+
+.icon {
+  font-size: 50px;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.browse-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+
+.thumb-wrapper {
+    position: relative;
+    border: 1px solid rgb(6 7 7 / 17%);
+    display: inline-flex;
+    cursor: pointer;
+    margin: 14px 5px;
+    height: 120px;
+}
+.thumb-wrapper.selected {
+  border-color: green;
+}
+
+
+ .tick {
+    position: absolute;
+    right: 41%;
+    bottom: 41%;
+  background: green;
+  color: white;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 50%;
+  display: none;
+  user-select: none;
+}
+
+.thumb-wrapper.selected .tick {
+  display: block;
+}
+
+.thumb {
+    width: 120px;
+    border: 1px solid #ccc;
+    display: block;
+}
+
+canvas#preview {
+  border: 1px solid #aaa;
+  margin-top: 20px;
+  display: none;
+  max-width: 100%;
+}
+
+/* Zoom Popup styles */
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+#popup canvas {
+  border: 5px solid white;
+  max-width: 90%;
+  max-height: 90%;
+  box-sizing: border-box;
+}
+
+#popup-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+}
+
+/* Microscope (zoom) icon style */
+.zoom-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 18px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-icon:hover {
+  background: #f0f0f0;
+}
+.zoomiconcolor {
+    color: darkblue;
+}
+.Pagecount {
+    position: absolute;
+    bottom: -23px;
+    left: 50px;
+    font-size: 15px;
+    color: black;
+    padding: 2px 4px;
+    z-index: 10;
+}
+.margineZero {
+    margin: 0px !important;
+    font-weight: 700;
+}
+
