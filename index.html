@@ -1,27 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .main-container{
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>PDF Tool Kit</title>
+  <link rel="stylesheet" href="./Styles/style.css" />
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 </head>
 <body>
-    <div class="main-container">
-        <div class="first">
-            Hello
-        </div>
-        <div class="second">
-            Pushpinder Kaur
-        </div>
-        <div class="third">
-            Yuvneesh Kashyap
-        </div>
-    </div>
+
+<h2>PDF Tool Kit</h2>
+
+<div class="tool-container">
+  <div class="tool-box" onclick="openPopup()">
+    <h3>Merge PDFs</h3>
+  </div>
+  <div class="tool-box convert-box" onclick="openConvertPopup()">
+    <h3>Convert Files to PDF</h3>
+  </div>
+ 
+  <div class="tool-box compress-box" onclick="openCompressPopup()">
+  <h3>Compress PDF</h3>
+</div>
+<a  href="./ExtractPages.html" style="text-decoration: none;">
+ <div class="tool-box compress-box" >
+  <h3>Specific Page download</h3>
+</div>
+</a>
+</div>
+
+<!-- Modal -->
+<div id="pdfModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closePopup()">&times;</span>
+    <h3>Select PDF Files to Merge</h3>
+     <p class="note">Note: You can upload only PDF files.</p>
+    <input type="file" id="pdfFiles" accept="application/pdf" multiple />
+    <button onclick="mergePDFs()" class="btn-convert">Merge & Download</button>
+  </div>
+</div>
+<div id="convertModal" class="modal-custom">
+  <div class="modal-content-custom">
+    <span class="close-custom" onclick="closeConvertPopup()">&times;</span>
+    <h3>Upload Files to Convert into One PDF</h3>
+
+    <p class="note">Note: You can upload only JPG, PNG, or TXT files.</p>
+
+    <input type="file" id="convertFiles" multiple accept=".jpg,.jpeg,.png,.txt" />
+    <button onclick="handleConvertToPDF()" class="btn-convert">Convert and Download PDF</button>
+  </div>
+</div>
+<div id="compressModal" class="modal-custom">
+  <div class="modal-content-custom">
+    <span class="close-custom" onclick="closeCompressPopup()">&times;</span>
+    <h3>Select a PDF to Compress</h3>
+    <input type="file" id="compressFile" accept="application/pdf" />
+    <button onclick="handleCompressPDF()" class="btn-convert">Compress & Download PDF</button>
+  </div>
+</div>
+<script src="./Scripts/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
 </body>
 </html>

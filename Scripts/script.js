@@ -180,3 +180,171 @@ window.downloadAsPDF = async function () {
   pdf.save(`page-${selectedPageNum}.pdf`);
 };
 });
+
+// Open/Close Merge PDF Modal
+function openPopup() {
+  document.getElementById("pdfModal").style.display = "flex";
+}
+function closePopup() {
+  document.getElementById("pdfModal").style.display = "none";
+}
+
+// Merge PDFs Logic
+async function mergePDFs() {
+  const input = document.getElementById("pdfFiles");
+  const files = input.files;
+  if (files.length < 2) {
+    return alert("Please select at least 2 PDF files to merge.");
+  }
+
+  const mergedPdf = await PDFLib.PDFDocument.create();
+
+  for (let file of files) {
+    if(file.type === "application/pdf"){
+    const bytes = await file.arrayBuffer();
+    const pdf = await PDFLib.PDFDocument.load(bytes);
+    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    copiedPages.forEach((page) => mergedPdf.addPage(page));
+    }
+    else{
+       return alert("You can upload only pdfs");
+    }
+  }
+
+  const mergedPdfBytes = await mergedPdf.save();
+  const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "merged.pdf";
+  a.click();
+}
+
+// Open/Close Convert Files Modal
+function openConvertPopup() {
+  document.getElementById("convertModal").style.display = "flex";
+}
+function closeConvertPopup() {
+  document.getElementById("convertModal").style.display = "none";
+}
+
+function openCompressPopup() {
+  document.getElementById("compressModal").style.display = "flex";
+}
+function closeCompressPopup() {
+  document.getElementById("compressModal").style.display = "none";
+}
+
+// Convert Images + Text to PDF
+async function handleConvertToPDF() {
+  const input = document.getElementById("convertFiles");
+  const files = Array.from(input.files);
+  if (files.length === 0) return alert("Please upload files first.");
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+
+  for (let i = 0; i < files.length; i++) {
+
+    const file = files[i];
+    const type = file.type;
+
+  // if(type === "application/pdf" || type === "image/jpg" || type === "image/jpeg" || type === "image/png" || type==="text/plain")
+  // {
+      if (type.startsWith("image/")) {
+      const base64 = await fileToBase64(file);
+      const img = new Image();
+      img.src = base64;
+
+      await new Promise((resolve) => {
+        img.onload = () => {
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          pdf.addImage(img, "JPEG", 0, 0, pageWidth, pageHeight);
+          if (i !== files.length - 1) pdf.addPage();
+          resolve();
+        };
+      });
+    } else if (type === "text/plain") {
+      const text = await file.text();
+      pdf.setFontSize(12);
+      pdf.text(text, 10, 20);
+      if (i !== files.length - 1) pdf.addPage();
+    } else {
+      alert("Unsupported file type: " + file.name);
+    }
+ // }
+  }
+
+  pdf.save("converted.pdf");
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleCompressPDF1() {
+  const fileInput = document.getElementById("compressFile");
+  const file = fileInput.files[0];
+  if (!file || file.type !== "application/pdf") {
+    return alert("Please upload a valid PDF file.");
+  }
+
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+
+  const newPdf = await PDFLib.PDFDocument.create();
+  const scaleFactor = 0.7; // reduce content size for compression
+
+  for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+    const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
+    const { width, height } = copiedPage.getSize();
+    copiedPage.scaleContent(scaleFactor, scaleFactor);
+    newPdf.addPage(copiedPage);
+  }
+
+  const compressedPdfBytes = await newPdf.save();
+  const blob = new Blob([compressedPdfBytes], { type: "application/pdf" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "compressed.pdf";
+  link.click();
+}
+
+async function handleCompressPDF() {
+  const file = document.getElementById('compressFile').files[0];
+  if (!file) return alert("Upload a PDF first.");
+
+  const arrayBuffer = await file.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+  const pdf = await loadingTask.promise;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 1 });
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    await page.render({ canvasContext: context, viewport }).promise;
+
+    // Compress image by converting to JPEG and reducing quality
+    const imgData = canvas.toDataURL("image/jpeg", 0.5); // 0.5 = 50% quality
+
+    if (pageNum > 1) doc.addPage();
+    doc.addImage(imgData, "JPEG", 0, 0, 210, 297); // A4 size
+  }
+
+  doc.save("compressed.pdf");
+}
